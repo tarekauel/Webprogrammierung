@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class TCPServer {
 
-	private ArrayList<String> names = new ArrayList<String>();
+	private ArrayList<String> names = null;
 	private ArrayList<String> output;
 
 	private Socket socket = null;
@@ -21,12 +21,15 @@ public class TCPServer {
 	private ObjectOutputStream printer = null;
 
 	private TCPServer(int port) {
+		System.out.println("TCP Server Konstruktor");
 		try {
 			sSocket = new ServerSocket(port);
+			System.out.println("Wartet auf TCP-Verbindung!");
 			socket = sSocket.accept();
 			reader = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 			printer = new ObjectOutputStream(socket.getOutputStream());
+			initList();
 		} catch (IOException e) {
 			e.getStackTrace();
 		}
@@ -34,7 +37,7 @@ public class TCPServer {
 
 	public boolean validInit() {
 		if (sSocket != null && socket != null && reader != null
-				&& printer != null) {
+				&& printer != null && names != null && names.size() > 0) {
 			return true;
 		} else {
 			return false;
@@ -101,10 +104,9 @@ public class TCPServer {
 				System.out
 						.println("TCP Server wurde nicht richtig initialisiert");
 				return;
-			}
-			s.initList();			
+			}		
 			while (!close) {
-				System.out.println("TCP waiting for input");
+				System.out.println("TCP Server wartet auf Eingabe");
 				String input = s.readMessage();
 				if (input == null) {
 					input = "";
@@ -112,10 +114,10 @@ public class TCPServer {
 							.println("Input wurde durch leeren String ersetzt!");
 				}
 				System.out.println("Eingabe: " + input);
-				if (input.equals("SHUTDOWN")) {
+				if (input.toUpperCase().equals("SHUTDOWN")) {
 					shutdown = true;
 					close = true;
-				} else if (input.equals("FINISH")) {
+				} else if (input.toUpperCase().equals("FINISH")) {
 					close = true;
 				} else {
 					s.sendAnswer(input);
@@ -123,9 +125,9 @@ public class TCPServer {
 			}
 			s.close();
 
-			System.out.println("TCP Server closed");
+			System.out.println("TCP Server: Client abgearbeitet.");
 		}
-		System.out.println("Exit");
+		System.out.println("TCP Sever-Service wird beendet!");
 	}
 
 	private void initList() {
@@ -133,6 +135,7 @@ public class TCPServer {
 		try {
 			readerNames = new BufferedReader(new FileReader("namen.txt"));
 			String zeile = readerNames.readLine();
+			names = new ArrayList<String>();
 			while (zeile != null) {
 				names.add(zeile);
 				zeile = readerNames.readLine();
