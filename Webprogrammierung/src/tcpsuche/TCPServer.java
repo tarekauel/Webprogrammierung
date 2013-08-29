@@ -16,7 +16,7 @@ import java.util.zip.GZIPOutputStream;
 
 public class TCPServer {
 
-	public static final int port = 50002;
+	public static final int port = 50000;
 
 	private static ObjectOutputStream printer;
 	private static BufferedReader reader;

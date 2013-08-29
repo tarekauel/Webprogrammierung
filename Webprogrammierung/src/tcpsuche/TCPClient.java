@@ -11,7 +11,7 @@ import java.util.zip.GZIPOutputStream;
 
 public class TCPClient {
 
-	public static final int port = 50002;
+	public static final int port = 50000;
 	public static final String host = "localhost";
 
 	private static PrintWriter printer;
