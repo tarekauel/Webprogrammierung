@@ -6,61 +6,107 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.zip.GZIPOutputStream;
 
 public class TCPClient {
 
-	public static final int port = 50000;
-	public static final String host = "localhost";
+	private PrintWriter printer;
+	private ObjectInputStream reader;
+	private BufferedReader console;
+	private Socket socket;
 
-	private static PrintWriter printer;
-	private static ObjectInputStream reader;
-	private static BufferedReader console;
-	private static Socket socket;
-
-	private static boolean nextInput = true;
-
-	public static void main(String[] args) throws IOException {
-		System.out.println("TCP Client start");
+	private TCPClient(String host, int port) {
 		try {
 			socket = new Socket(host, port);
-			printer = new PrintWriter( socket.getOutputStream() );
 			reader = new ObjectInputStream(socket.getInputStream());
+			printer = new PrintWriter(socket.getOutputStream());
 			console = new BufferedReader(new InputStreamReader(System.in));
-
-			while (nextInput) {
-				String input = console.readLine();
-				printer.println(input);
-				printer.flush();
-				if (input.equals("FINISH") || input.equals("SHUTDOWN")) {
-					nextInput = false;
-				} else {
-					
-					MessageContainer message = (MessageContainer) reader
-							.readObject();
-
-					System.out.println(message.getDate());
-
-					for (String zeile : message.getMessage()) {
-						System.out.println(zeile);
-					}
-				}
-			}
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			if (printer != null)
-				printer.close();
+			e.getStackTrace();
+		}
+	}
+
+	public boolean validInit() {
+		if (socket != null && reader != null && printer != null
+				&& console != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static TCPClient getClient(String host, int port) {
+		TCPClient c = new TCPClient(host, port);
+		if(c.validInit()) {
+			return c;
+		} else {
+			c.close();
+			return null;
+		}
+	}
+
+	public void close() {
+		try {
+			if (console != null)
+				console.close();
 			if (reader != null)
 				reader.close();
+			if (printer != null)
+				printer.close();
 			if (socket != null)
 				socket.close();
+		} catch (IOException e) {
+			e.getStackTrace();
 		}
+	}
+
+	public MessageContainer readMessage() {
+		try {
+			return (MessageContainer) reader.readObject();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String readConsole() {
+		try {
+			return console.readLine();
+		} catch (IOException e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+
+	public void sendMessage(String message) {
+		printer.println(message);
+		printer.flush();
+	}
+
+	public static void main(String[] args) {
+		System.out.println("TCP Client start");
+		TCPClient c = TCPClient.getClient("localhost", 50000);
+		if(c == null) {
+			System.out.println("Error. Client wurde nicht richtig initialisiert!");
+			return;
+		} 
+		boolean inputMode = true;
+		while (inputMode) {
+			String input = c.readConsole();
+			c.sendMessage(input);
+			if (input.equals("FINISH") || input.equals("SHUTDOWN")) {
+				inputMode = false;
+			} else {
+				MessageContainer reply = c.readMessage();
+				System.out.println(reply.getDate());
+				for (String zeile : reply.getMessage()) {
+					System.out.println(zeile);
+				}
+			}
+		}
+		c.close();
 		System.out.println("TCP Client stop");
 	}
 

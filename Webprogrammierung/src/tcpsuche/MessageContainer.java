@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
+@SuppressWarnings("serial")
 public class MessageContainer implements Serializable {
 	
+
 	private ArrayList<String> message = new ArrayList<String>();
 	private Date date;
 	
