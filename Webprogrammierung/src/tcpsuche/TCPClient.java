@@ -96,7 +96,7 @@ public class TCPClient {
 		while (inputMode) {
 			String input = c.readConsole();
 			c.sendMessage(input);
-			if (input.equals("FINISH") || input.equals("SHUTDOWN")) {
+			if (input.toUpperCase().equals("FINISH") || input.toUpperCase().equals("SHUTDOWN")) {
 				inputMode = false;
 			} else {
 				MessageContainer reply = c.readMessage();
