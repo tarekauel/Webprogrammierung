@@ -54,7 +54,6 @@ public class TCPServer {
 
 	public void close() {
 		try {
-
 			if (reader != null)
 				reader.close();
 			if (printer != null)
