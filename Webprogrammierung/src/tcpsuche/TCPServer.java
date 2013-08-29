@@ -79,7 +79,7 @@ public class TCPServer {
 		}
 	}
 
-	public void sendAnswer(String input) {
+	public boolean sendAnswer(String input) {
 		output = new ArrayList<String>();
 		for (String name : names) {
 			if (name.matches(input)) {
@@ -91,7 +91,9 @@ public class TCPServer {
 			printer.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -103,7 +105,7 @@ public class TCPServer {
 			if (s == null) {
 				System.out
 						.println("TCP Server wurde nicht richtig initialisiert");
-				return;
+				close = true;
 			}		
 			while (!close) {
 				System.out.println("TCP Server wartet auf Eingabe");
@@ -120,10 +122,13 @@ public class TCPServer {
 				} else if (input.toUpperCase().equals("FINISH")) {
 					close = true;
 				} else {
-					s.sendAnswer(input);
+					if(!s.sendAnswer(input))
+						close = true;
 				}
 			}
-			s.close();
+			if( s != null) {
+				s.close();
+			}
 
 			System.out.println("TCP Server: Client abgearbeitet.");
 		}
