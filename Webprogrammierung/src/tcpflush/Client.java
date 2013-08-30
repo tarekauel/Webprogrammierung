@@ -14,8 +14,7 @@ public class Client {
 	public Client(String host, int port) {
 		try {
 			socket = new Socket(host, port);
-			reader = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
+			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));                     
 			printer = new PrintWriter(socket.getOutputStream());
 		} catch (IOException e) {
 			e.getStackTrace();
@@ -46,13 +45,13 @@ public class Client {
 
 	public void writeMessage(String message) {
 		printer.println(message);
-		//printer.flush();
+		// printer.flush();
 
 	}
 
 	public static void main(String[] args) {
-		Client c = new Client( "localhost", 50000);
-		for(int i=0; i<5462-1; i++) {
+		Client c = new Client("localhost", 50000);
+		for (int i = 0; i < 5462 - 1; i++) {
 			c.writeMessage("A");
 		}
 		c.close();
