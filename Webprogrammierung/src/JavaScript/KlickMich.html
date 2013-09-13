@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript">
+		function move() {
+		    var div = document.getElementById("movingDiv");
+			var newTop = Math.floor( Math.random()*500 );
+			var newLeft = Math.floor( Math.random()*500 );
+			div.style.top =  newTop + "px";
+			div.style.left =  newLeft + "px";
+		}
+		
+	</script>
+</head>
+<body>
+	<div id="movingDiv" style="position: absolute; top: 20px; left: 40px;">
+		<input type="button" value="Klick mich!"  onmouseover="move()" />
+	</div>
+</body>
+</html>

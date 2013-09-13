@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript">
+		function ausgeben() {
+			var inputBox = document.getElementById("eingabe");
+			var text = inputBox.attributes.getNamedItem("value").nodeValue;
+			document.getElementById("ausgabeDiv").innerHTML = "<p>"+text+"</p>";
+		}
+	</script>
+</head>
+<body>
+	<input id="eingabe" type="text" value="eingabe" style="position: absolute; top: 10px;"><br />
+	<input type="button" value="Ausgeben" onclick="ausgeben()" />
+	<div id="ausgabeDiv">
+	</div>
+</body>
+</html>
