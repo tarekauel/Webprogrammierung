@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cooles Anmeldeformular</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script type="text/javascript">
+		function sendForm() {
+			var username = document.getElementById("user").value;
+			var pass = document.getElementById("pass").value;
+			var pass_check = document.getElementById("pass_check").value;
+			var spam = document.getElementById("spam").value;
+			if( username == '' || pass == '' || pass_check == '') {
+				alert("Alles ausfüllen!");
+			} else if (pass != pass_check) {
+				alert("Passwörter sind ungleich!")
+			} else if (pass.length < 6) {
+				alert("Passwort zu kurz!");
+			}
+			
+			document.getElementById("form").submit();
+			
+		}
+	</script>
+</head>
+<body>
+	<div style="margin: 150px auto; width: 400px">
+		<form action="Anmeldeformular.html#Send" method="post" id="form">
+			<table>
+				<tr>
+					<th colspan="2">Anmeldeformular</th>
+				</tr>
+				<tr>
+					<td><label for="user">Username*</label></td>
+					<td><input type="text" name="user" id="user" /></td>
+				</tr>
+				<tr>
+					<td><label for="pass">Passwort*</label></td>
+					<td><input type="password" name="pass" id="pass"/></td>
+				</tr>
+				<tr>
+					<td><label for="pass_check">Passwort-Wiederholung*</label></td>
+					<td><input type="password" name="pass_check" id="pass_check" /></td>
+				</tr>
+				<tr>
+					<td><label for="user">Newsletter?</label></td>
+					<td><input type="checkbox" name="spam" value="jaaaa" id="spam" /> gerne</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td><input type="submit" name="button" value="Abschicken" onclick="sendForm()" /></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>

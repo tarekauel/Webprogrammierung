@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cooler BWL-Rechner</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript">
+	
+	function calculate() {
+		
+		var ek = document.getElementById("ek").value;
+		var fk = document.getElementById("fk").value;
+		var gewinn = document.getElementById("gewinn").value;
+
+
+		var ek_rendite = document.getElementById("ek_rendite");
+		var fk_rendite = document.getElementById("fk_rendite");
+		var gk_rendite = document.getElementById("gk_rendite");
+		var schulden = document.getElementById("schulden");
+
+		if (ek == 0) {
+			ek_rendite.value = "DIV 0";
+		} else {
+			ek_rendite.value = (gewinn / ek * 100) + "%";
+		}
+
+		if (fk == 0) {
+			fk_rendite.value = "DIV 0";
+		} else {
+			fk_rendite.value = (gewinn / fk * 100) + "%";
+		}
+
+		var summe = parseInt(ek) + parseInt(fk);
+		if (summe == 0) {
+			gk_rendite.value = "DIV 0";
+		} else {
+			gk_rendite.value = (gewinn / summe * 100) + "%";
+		}
+		if (ek == 0 ) {
+			schulden.value = "DIV 0";
+		} else {
+			schulden.value = fk / ek * 100 + "%";
+		}
+		
+		var stateObj = {
+			foo : "bar"
+		};
+		history.pushState(stateObj, "page 2", "BWL-Rechner.html#" + ek + ";"
+				+ fk + ";" + gewinn);
+	}
+	window.onhashchange = function() {
+		if (window.location.hash) {
+			var hash = window.location.hash.substring(1);
+			var array_hash = hash.split(";");
+			document.getElementById("ek").value = array_hash[0];
+			document.getElementById("fk").value = array_hash[1];
+			document.getElementById("gewinn").value = array_hash[2];
+			calculate();
+		}
+	}
+</script>
+<style type="text/css">
+.box {
+	width: 300px;
+	background: #DDD;
+	border: 1px solid black;
+	margin: 25px;
+	padding: 5px;
+}
+
+table {
+	width: 200px;
+	margin: auto
+}
+
+h1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+	<div style="margin: 150px auto; width: 400px">
+		<h1>BWL-Rechner</h1>
+		<div class="box">
+			<form id="input_form">
+				<table>
+					<tr>
+						<td>FK:</td>
+						<td><input type="text" name="fk" id="fk" value="0"
+							onchange="calculate()" /></td>
+					</tr>
+					<tr>
+						<td>EK:</td>
+						<td><input type="text" name="ek" id="ek" value="0"
+							onchange="calculate()" /></td>
+					</tr>
+					<tr>
+						<td>Gewinn</td>
+						<td><input type="text" name="gewinn" id="gewinn" value="0"
+							onchange="calculate()" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		<div class="box">
+			<table>
+				<tr>
+					<td>FK-Rendite:</td>
+					<td><input type="text" id="fk_rendite" readonly="readonly" /></td>
+				</tr>
+				<tr>
+					<td>EK-Rendtite:</td>
+					<td><input type="text" id="ek_rendite" readonly="readonly" /></td>
+				</tr>
+				<tr>
+					<td>GK-Rendite</td>
+					<td><input type="text" id="gk_rendite" readonly="readonly" /></td>
+				</tr>
+				<tr>
+					<td>Verschuldungsgrad</td>
+					<td><input type="text" id="schulden" readonly="readonly" /></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+</html>
