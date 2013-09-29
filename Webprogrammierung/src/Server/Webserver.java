@@ -274,7 +274,7 @@ public class Webserver {
 	}
 
 	public static void main(String[] args) throws IOException {
-		Webserver w = new Webserver(8080);
+		Webserver w = new Webserver(80);
 		while (true) {
 			try {
 				w.runServer();
