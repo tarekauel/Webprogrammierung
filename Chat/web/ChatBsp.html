@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>Chat</title>
+
+<script type="text/javascript">
+    "use strict";
+
+    function demo() {
+        // send new message
+        var msg = {"fromUser":"horst", "toUser":"feistel", "text":"Horst Feistel"};
+
+        var xmlHttp = new XMLHttpRequest();
+       
+        xmlHttp.open('POST', '/chat/horst/messages', false);
+        xmlHttp.send(JSON.stringify(msg));
+
+        // receive messages
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open('GET', '/chat/horst/messages', false);
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4) {
+                var obj = JSON.parse(xmlHttp.responseText);
+                document.write("Von: " + obj[0].fromUser + "<br>Nach: " + obj[0].toUser);
+            }
+        };
+        xmlHttp.send(null);
+    }
+</script>
+</head>
+
+<body onload="demo();">
+</body>
+</html>

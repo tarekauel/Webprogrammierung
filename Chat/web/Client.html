@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chat</title>
+	<style type="text/css">
+		.partner {
+			font-weight: bold;
+		}
+		.chatbox {
+			width: 300px;
+			border: 1px solid #000;
+		}
+	</style>
+	<script type="text/javascript">
+		function partnerChanged() {
+			refreshChat();
+		}
+		
+		function sendMessage() {
+			var message = document.getElementById("message").value;
+			var request = getXMLHttpRequestObject();
+			request.onreadystatechange = function() {
+				if(request.readyState == 4) {
+					refreshChat();
+				}
+			};
+			var me = document.getElementById("me").value;
+			var partner = document.getElementById("partner").value;
+			request.open("POST", "http://localhost:8080/chat/"+me+"/messages", true);
+			request.send("fromUser="+me+"&toUser="+partner+"&text=" + message);
+		}
+		
+		function refreshChat() {
+			var me = document.getElementById("me").value;
+			var partner = document.getElementById("partner").value;
+			var request = getXMLHttpRequestObject();
+			request.onreadystatechange = function() {
+				if(request.readyState == 4) {
+					var obj = JSON.parse(request.responseText || "null");
+					var chat = "";
+					for( var i=obj.length-1; i>=0; i--) {
+						if( (obj[i].fromUser == me && obj[i].toUser == partner) ||
+							(obj[i].toUser == me && obj[i].fromUser == partner)) {
+							if( obj[i].fromUser == me ) {
+								chat += "<span>" + obj[i].fromUser+": " + obj[i].text + " </span><br />";
+							} else {
+								chat += "<span class=\"partner\">" + obj[i].fromUser+": " + obj[i].text + " </span><br />";
+							}
+						}
+					}
+					document.getElementById("chat").innerHTML=chat;
+				}
+			};
+			request.open("GET", "http://localhost:8080/chat/"+me+"/messages", true);
+			request.send(null);
+			window.setTimeout(refreshChat, 500);
+			
+		}
+		
+		function getXMLHttpRequestObject() { 
+			var ref = null; 
+			ref = new XMLHttpRequest(); 
+			return ref; 
+		}
+
+	</script>
+</head>
+<body onload="refreshChat()">
+	<form action="">
+		Hallo A!<br />
+		Dein Nickname: <input type="text" value="A" id="me" onchange="partnerChanged()"/><br />
+		Dein Chatpartner: <input type="text" value="B" id="partner" onchange="partnerChanged()"/><br />
+
+		Deine Nachricht: <input type="text" id="message" />
+		<input type="button" onClick="sendMessage()" value="Absenden" />
+		<div id="chat" class="chatbox">
+		</div>
+	</form>	
+</body>
+</html>
